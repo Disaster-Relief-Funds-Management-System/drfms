@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 
 const MainNavigation = () => {
@@ -21,27 +21,46 @@ const MainNavigation = () => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">
+                <NavLink
+                  style={({ isActive }) => {
+                    return isActive
+                      ? { color: "white", backgroundColor: "black" }
+                      : {};
+                  }}
+                  className="nav-link"
+                  aria-current="page"
+                  to="/"
+                >
                   Donors
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link active"
+                <NavLink
+                  style={({ isActive }) => {
+                    return isActive
+                      ? { color: "white", backgroundColor: "black" }
+                      : {};
+                  }}
+                  className="nav-link"
                   aria-current="page"
                   to="/dashboard"
                 >
                   Dashboard
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link active"
+                <NavLink
+                  style={({ isActive }) => {
+                    return isActive
+                      ? { color: "white", backgroundColor: "black" }
+                      : {};
+                  }}
+                  className="nav-link"
                   aria-current="page"
                   to="/managers"
                 >
                   Managers
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </div>
