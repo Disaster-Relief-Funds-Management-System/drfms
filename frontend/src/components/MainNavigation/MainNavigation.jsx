@@ -22,12 +22,13 @@ const MainNavigation = () => {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <NavLink
-                  style={({ isActive }) => {
-                    return isActive
-                      ? { color: "white", backgroundColor: "black" }
-                      : {};
-                  }}
-                  className="nav-link"
+                  // style={({ isActive }) => {
+                  //   return isActive
+                  //     ? { color: "white", backgroundColor: "black" }
+                  //     : {};
+                  // }}
+                  className={`nav-link ${({ isActive }) =>
+                    isActive ? "active" : "inactive"}`}
                   aria-current="page"
                   to="/"
                 >
@@ -36,12 +37,13 @@ const MainNavigation = () => {
               </li>
               <li className="nav-item">
                 <NavLink
-                  style={({ isActive }) => {
-                    return isActive
-                      ? { color: "white", backgroundColor: "black" }
-                      : {};
-                  }}
-                  className="nav-link"
+                  // style={({ isActive }) => {
+                  //   return isActive
+                  //     ? { color: "white", backgroundColor: "black" }
+                  //     : {};
+                  // }}
+                  className={`nav-link ${({ isActive }) =>
+                    isActive ? "active" : "inactive"}`}
                   aria-current="page"
                   to="/dashboard"
                 >
@@ -50,12 +52,13 @@ const MainNavigation = () => {
               </li>
               <li className="nav-item">
                 <NavLink
-                  style={({ isActive }) => {
-                    return isActive
-                      ? { color: "white", backgroundColor: "black" }
-                      : {};
-                  }}
-                  className="nav-link"
+                  // style={({ isActive }) => {
+                  //   return isActive
+                  //     ? { color: "white", backgroundColor: "black" }
+                  //     : {};
+                  // }}
+                  className={`nav-link ${({ isActive }) =>
+                    isActive ? "active" : "inactive"}`}
                   aria-current="page"
                   to="/managers"
                 >
