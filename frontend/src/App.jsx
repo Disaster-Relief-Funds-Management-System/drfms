@@ -5,7 +5,6 @@ import MainNavigation from "./components/MainNavigation/MainNavigation";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Managers from "./pages/Managers/Managers";
 import Donors from "./pages/Donors/Donors";
-import { useContext } from "react";
 
 function App() {
   return (
