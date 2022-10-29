@@ -1,10 +1,30 @@
 import { createContext, useState, useEffect } from "react";
+import { ethers } from "ethers";
+
+import { contractABI, contractAddress } from "../utils/constansts";
 
 export const BlockchainContext = createContext({
   connectedWallet: undefined,
 });
 
 const { ethereum } = window;
+
+const getEthereumContract = () => {
+  const provider = new ethers.providers.Web3Provider(ethereum);
+  const signer = provider.getSigner();
+  const transactionContract = new ethers.Contract(
+    contractAddress,
+    contractABI,
+    signer
+  );
+
+  // console.log({
+  //   provider,
+  //   signer,
+  //   transactionContract,
+  // });
+  return transactionContract;
+};
 
 export const BlockchainContextProvider = (props) => {
   const [connectedWallet, setConnectedWallet] = useState("");
@@ -30,6 +50,7 @@ export const BlockchainContextProvider = (props) => {
   };
 
   useEffect(() => {
+    getEthereumContract();
     connectWallet();
     return () => {};
   }, []);
