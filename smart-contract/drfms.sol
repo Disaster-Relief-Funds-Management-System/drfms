@@ -4,6 +4,10 @@ pragma solidity ^0.8.0;
 contract DRFMS {
     address payable developer;
     
+    constructor() {
+        developer = payable (msg.sender);
+    }
+
     struct ReliefFundsDetails {
         string description;
         address manager; // creator and owner who is incharge of the relief efforts
@@ -21,9 +25,9 @@ contract DRFMS {
     mapping(address => ReliefFundsDetails) public reliefFundsManagers;
     mapping(address => UsageInfo[]) internal usageMapping;
 
-
-    constructor() {
-        developer = payable (msg.sender);
+    modifier onlyDeveloper() {
+        require(msg.sender == developer);
+        _;
     }
 
     modifier authorizedManager(address addr) {
@@ -75,6 +79,10 @@ contract DRFMS {
     function donate(address payable receiver) registeredReliefFunds(receiver) public payable {
         receiver.transfer(msg.value);
         reliefFundsManagers[receiver].totalAmount += msg.value;
+    }
+
+    function closeContract() public onlyDeveloper { 
+        selfdestruct(developer);
     }
 
 }
