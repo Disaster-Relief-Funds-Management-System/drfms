@@ -65,6 +65,10 @@ contract DRFMS {
 
         reliefFundsManagers[fundsAddress] = details;
     }
+
+    function viewReliefFundsDetails(address fundsAddress) public view returns(string memory, bool) {
+        return (reliefFundsManagers[fundsAddress].description, reliefFundsManagers[fundsAddress].fundsNeeded);
+    }
     
     // TODO: Remove ReliefFundsDetails from reliefFundsManager after efforts are done.
     // Question: What to do with the rest of the donations?
