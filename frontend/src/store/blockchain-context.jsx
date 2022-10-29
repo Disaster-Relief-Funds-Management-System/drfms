@@ -29,6 +29,31 @@ const getEthereumContract = () => {
 export const BlockchainContextProvider = (props) => {
   const [connectedWallet, setConnectedWallet] = useState("");
 
+  const checkIfWalletIsConnected = async () => {
+    try {
+      if (!ethereum) {
+        alert("Please install MetaMask from your browser's extension store!");
+        return;
+      }
+
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+
+      if (accounts.length) {
+        setConnectedWallet(accounts[0]);
+        console.log("setting connected wallet as " + accounts[0]);
+      } else {
+        console.log("no wallet has given access");
+      }
+    } catch (err) {
+      console.log(
+        "error occured while trying to connect the wallet\nerr: " + err
+      );
+      throw new Error("no ethereum object detected in the window");
+    }
+  };
+
   const connectWallet = async () => {
     try {
       if (!ethereum) {
@@ -50,15 +75,14 @@ export const BlockchainContextProvider = (props) => {
   };
 
   useEffect(() => {
-    getEthereumContract();
-    connectWallet();
-    return () => {};
+    checkIfWalletIsConnected();
   }, []);
 
   return (
     <BlockchainContext.Provider
       value={{
         connectedWallet,
+        connectWallet, // TODO call this on "Connect" button press
       }}
     >
       {props.children}
