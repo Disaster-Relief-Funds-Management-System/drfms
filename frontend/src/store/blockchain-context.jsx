@@ -8,6 +8,8 @@ export const BlockchainContext = createContext({
 });
 
 const { ethereum } = window;
+const ALERT_INSTALL_METAMASK =
+  "Please install MetaMask from your browser's extension store!";
 
 const getEthereumContract = () => {
   const provider = new ethers.providers.Web3Provider(ethereum);
@@ -32,7 +34,7 @@ export const BlockchainContextProvider = (props) => {
   const checkIfWalletIsConnected = async () => {
     try {
       if (!ethereum) {
-        alert("Please install MetaMask from your browser's extension store!");
+        alert(ALERT_INSTALL_METAMASK);
         return;
       }
 
@@ -42,30 +44,9 @@ export const BlockchainContextProvider = (props) => {
 
       if (accounts.length) {
         setConnectedWallet(accounts[0]);
-        console.log("setting connected wallet as " + accounts[0]);
       } else {
         console.log("no wallet has given access");
       }
-    } catch (err) {
-      console.log(
-        "error occured while trying to connect the wallet\nerr: " + err
-      );
-      throw new Error("no ethereum object detected in the window");
-    }
-  };
-
-  const connectWallet = async () => {
-    try {
-      if (!ethereum) {
-        alert("Please install MetaMask from your browser's extension store!");
-        return;
-      }
-
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-
-      setConnectedWallet(accounts[0]);
     } catch (err) {
       console.log(
         "error occured while trying to connect the wallet\nerr: " + err
@@ -78,11 +59,54 @@ export const BlockchainContextProvider = (props) => {
     checkIfWalletIsConnected();
   }, []);
 
+  const connectWallet = async () => {
+    try {
+      if (!ethereum) {
+        alert(ALERT_INSTALL_METAMASK);
+        return;
+      }
+
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      setConnectedWallet(accounts[0]);
+    } catch (err) {
+      console.log("error occured while trying to connect the wallet\n" + err);
+      throw new Error("no ethereum object detected in the window");
+    }
+  };
+
+  /**
+   * calls the viewReliefFundsDetails smart contract function with following parameter
+   * @params  fundsAddress -> check if this fund's address is registered and accepting funds
+   * @returns array with [0] being the description and [1] being the status
+   */
+  const searchReliefFunds = async (fundsAddress) => {
+    try {
+      if (!ethereum) {
+        alert(ALERT_INSTALL_METAMASK);
+        return;
+      }
+
+      const smartContract = getEthereumContract();
+      const result = await smartContract.viewReliefFundsDetails(fundsAddress);
+
+      return result;
+    } catch (err) {
+      console.log(
+        "error occured while trying to search for relief funds\n" + err
+      );
+      return undefined, false; // undefined here refers to some error occured while sending the request
+    }
+  };
+
   return (
     <BlockchainContext.Provider
       value={{
         connectedWallet,
         connectWallet, // TODO call this on "Connect" button press
+        searchReliefFunds,
       }}
     >
       {props.children}
