@@ -79,7 +79,7 @@ export const BlockchainContextProvider = (props) => {
 
   /**
    * calls the viewReliefFundsDetails smart contract function with following parameter
-   * @params  fundsAddress -> check if this fund's address is registered and accepting funds
+   * @param {string} fundsAddress check if this fund's address is registered and accepting funds
    * @returns array with [0] being the description and [1] being the status
    */
   const searchReliefFunds = async (fundsAddress) => {
@@ -101,6 +101,11 @@ export const BlockchainContextProvider = (props) => {
     }
   };
 
+  /**
+   * Donates amount to receiver by calling donate smart contract function.
+   * @param {string} receiver wallet address of relief funds
+   * @param {string} amount amount to donate
+   */
   const donate = async (receiver, amount) => {
     // receiver = same as fundsAddress before
     const options = { value: ethers.utils.parseEther(amount) };
