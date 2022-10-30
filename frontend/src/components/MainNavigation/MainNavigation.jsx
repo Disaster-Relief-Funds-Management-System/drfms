@@ -3,7 +3,7 @@ import classes from "./MainNavigation.module.css";
 
 const MainNavigation = () => {
   return (
-    <div>
+    <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <div className={`navbar-brand ${classes["logo"]}`}>DRFMS</div>
@@ -69,7 +69,7 @@ const MainNavigation = () => {
           </div>
         </div>
       </nav>
-    </div>
+    </>
   );
 };
 

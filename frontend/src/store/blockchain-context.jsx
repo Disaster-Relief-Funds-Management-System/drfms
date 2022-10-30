@@ -5,6 +5,9 @@ import { contractABI, contractAddress } from "../utils/constansts";
 
 export const BlockchainContext = createContext({
   connectedWallet: undefined,
+  connectWallet: undefined,
+  searchReliefFunds: undefined,
+  donate: undefined,
 });
 
 const { ethereum } = window;
@@ -30,6 +33,7 @@ const getEthereumContract = () => {
 
 export const BlockchainContextProvider = (props) => {
   const [connectedWallet, setConnectedWallet] = useState("");
+  const [donateIsLoading, setDonateIsLoading] = useState(false);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -112,8 +116,11 @@ export const BlockchainContextProvider = (props) => {
     const smartContract = getEthereumContract();
     const txHash = await smartContract.donate(receiver, options);
     console.log(`Loading - ${txHash.hash}`);
+    setDonateIsLoading(true);
     await txHash.wait();
-    console.log(`Loading - ${txHash.hash}`);
+    setDonateIsLoading(false);
+    console.log(`Confirmed - ${txHash.hash}`);
+    return txHash;
   };
 
   return (
@@ -123,6 +130,7 @@ export const BlockchainContextProvider = (props) => {
         connectWallet, // TODO call this on "Connect" button press
         searchReliefFunds,
         donate,
+        donateIsLoading,
       }}
     >
       {props.children}
