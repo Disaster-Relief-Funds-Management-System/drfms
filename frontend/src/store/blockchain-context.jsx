@@ -101,6 +101,16 @@ export const BlockchainContextProvider = (props) => {
     }
   };
 
+  const donate = async (receiver, amount) => {
+    // receiver = same as fundsAddress before
+    const options = { value: ethers.utils.parseEther(amount) };
+    const smartContract = getEthereumContract();
+    const txHash = await smartContract.donate(receiver, options);
+    console.log(`Loading - ${txHash.hash}`);
+    await txHash.wait();
+    console.log(`Loading - ${txHash.hash}`);
+  };
+
   return (
     <BlockchainContext.Provider
       value={{
