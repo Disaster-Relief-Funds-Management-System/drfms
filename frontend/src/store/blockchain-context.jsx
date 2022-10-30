@@ -122,6 +122,7 @@ export const BlockchainContextProvider = (props) => {
         connectedWallet,
         connectWallet, // TODO call this on "Connect" button press
         searchReliefFunds,
+        donate,
       }}
     >
       {props.children}
