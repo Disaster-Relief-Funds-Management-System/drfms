@@ -3,12 +3,7 @@ import { ethers } from "ethers";
 
 import { contractABI, contractAddress } from "../utils/constansts";
 
-export const BlockchainContext = createContext({
-  connectedWallet: undefined,
-  connectWallet: undefined,
-  searchReliefFunds: undefined,
-  donate: undefined,
-});
+export const BlockchainContext = createContext();
 
 const { ethereum } = window;
 const ALERT_INSTALL_METAMASK =
@@ -48,14 +43,16 @@ export const BlockchainContextProvider = (props) => {
 
       if (accounts.length) {
         setConnectedWallet(accounts[0]);
+        return true;
       } else {
         console.log("no wallet has given access");
+        return false;
       }
     } catch (err) {
       console.log(
         "error occured while trying to connect the wallet\nerr: " + err
       );
-      throw new Error("no ethereum object detected in the window");
+      return false;
     }
   };
 
@@ -123,6 +120,40 @@ export const BlockchainContextProvider = (props) => {
     return txHash;
   };
 
+  const addReliefFundsManager = async (fundsAddress, description) => {
+    try {
+      if (!checkIfWalletIsConnected()) {
+        connectWallet();
+      }
+
+      const smartContract = getEthereumContract();
+      await smartContract.addReliefFundsManager(fundsAddress, description);
+    } catch (err) {
+      console.log(
+        "error occured while trying to add new relief funds manager\n" + err
+      );
+    }
+  };
+
+  // addUsage(address fundsAddress, string memory reason, uint256 val, uint256 usedOn) authorizedManager(fundsAddress) public {
+  const addUsage = async (fundsAddress, reason, val, usedOn) => {
+    try {
+      if (!checkIfWalletIsConnected()) {
+        connectWallet();
+      }
+
+      val = ethers.utils.parseEther(val);
+      usedOn = usedOn.getTime();
+
+      const smartContract = getEthereumContract();
+      await smartContract.addUsage(fundsAddress, reason, val, usedOn);
+    } catch (err) {
+      console.log(
+        "error occured while trying to add funds usage information\n" + err
+      );
+    }
+  };
+
   return (
     <BlockchainContext.Provider
       value={{
@@ -131,6 +162,8 @@ export const BlockchainContextProvider = (props) => {
         searchReliefFunds,
         donate,
         donateIsLoading,
+        addReliefFundsManager,
+        addUsage,
       }}
     >
       {props.children}
