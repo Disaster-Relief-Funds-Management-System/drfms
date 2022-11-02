@@ -153,14 +153,20 @@ export const BlockchainContextProvider = (props) => {
       }
 
       val = ethers.utils.parseEther(val);
-      usedOn = usedOn.getTime();
 
       const smartContract = getEthereumContract();
-      await smartContract.addUsage(fundsAddress, reason, val, usedOn);
+      const result = await smartContract.addUsage(
+        fundsAddress,
+        reason,
+        val,
+        usedOn
+      );
+      return { hash: result.hash };
     } catch (err) {
       console.log(
         "error occured while trying to add funds usage information\n" + err
       );
+      return { error: err.error.message };
     }
   };
 

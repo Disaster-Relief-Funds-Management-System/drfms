@@ -12,3 +12,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </BlockchainContextProvider>
 );
+
+// TODO return total amount donated from viewReliefFundsDetails function
+// TODO store every donated relief funds in local storage to quickly fetch getUsage(fundsAddress) information on /dashboard page

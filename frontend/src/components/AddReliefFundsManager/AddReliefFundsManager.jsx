@@ -37,6 +37,7 @@ const AddReliefFundsManager = () => {
   return (
     <div className="container">
       <form onSubmit={generateHandler}>
+        <legend className="mt-3">Generate New Relief Funds Form</legend>
         <div className="form-floating my-3">
           <input
             required
