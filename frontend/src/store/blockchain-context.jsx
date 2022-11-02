@@ -190,7 +190,7 @@ export const BlockchainContextProvider = (props) => {
     <BlockchainContext.Provider
       value={{
         connectedWallet,
-        connectWallet, // TODO call this on "Connect" button press
+        connectWallet,
         searchReliefFunds,
         donate,
         donateIsLoading,
