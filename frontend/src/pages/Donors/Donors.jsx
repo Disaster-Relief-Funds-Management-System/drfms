@@ -4,6 +4,7 @@ import { createRef, useContext } from "react";
 import { BlockchainContext } from "../../store/blockchain-context";
 import FundsDetails from "../../components/FundsDetails/FundsDetails";
 import Loader from "../../components/Loader/Loader";
+import { hash } from "../../utils/shortenAddress";
 
 const Donors = () => {
   const ctx = useContext(BlockchainContext);
@@ -92,7 +93,7 @@ const Donors = () => {
 
       {descriptionStatus !== undefined ? (
         <FundsDetails
-          address={descriptionStatus.address}
+          address={hash(descriptionStatus.address)}
           description={descriptionStatus.description}
           status={descriptionStatus.status}
           dismissHandler={dismissHandler}

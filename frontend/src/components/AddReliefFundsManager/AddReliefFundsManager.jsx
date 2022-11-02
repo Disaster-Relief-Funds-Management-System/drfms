@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createRef, useContext } from "react";
 import { BlockchainContext } from "../../store/blockchain-context";
+import { hash } from "../../utils/shortenAddress";
 import Modal from "../Modal/Modal";
 
 const AddReliefFundsManager = () => {
@@ -77,7 +78,7 @@ const AddReliefFundsManager = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {showModal.hash}
+              {hash(showModal.hash)}
             </a>
           }
         />
