@@ -170,6 +170,22 @@ export const BlockchainContextProvider = (props) => {
     }
   };
 
+  const closeFunds = async (fundsAddress) => {
+    try {
+      if (!checkIfWalletIsConnected()) {
+        connectWallet();
+      }
+
+      const smartContract = getEthereumContract();
+      const result = await smartContract.removeReliefFunds(fundsAddress);
+
+      return { hash: result.hash };
+    } catch (err) {
+      console.log("error occured while trying to close relief funds\n" + err);
+      return { error: err.error.message };
+    }
+  };
+
   return (
     <BlockchainContext.Provider
       value={{
@@ -180,6 +196,7 @@ export const BlockchainContextProvider = (props) => {
         donateIsLoading,
         addReliefFundsManager,
         addUsage,
+        closeFunds,
       }}
     >
       {props.children}

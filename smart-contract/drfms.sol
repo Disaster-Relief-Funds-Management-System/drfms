@@ -31,7 +31,7 @@ contract DRFMS {
     }
 
     modifier authorizedManager(address addr) {
-        require(msg.sender == reliefFundsManagers[addr].manager, "You don't have the permission to add usage informaation.");
+        require(msg.sender == reliefFundsManagers[addr].manager, "You don't have the permission to modify this relief funds' informaation.");
         _;
     }
 
