@@ -120,6 +120,11 @@ export const BlockchainContextProvider = (props) => {
     return txHash;
   };
 
+  /**
+   * Adds this relief funds to the blockchain and assigns the funds manager.
+   * @param {string} fundsAddress Wallet address of the relief funds. (It can also be same as msg.sender.)
+   * @param {string} description Short description about what disaster was this relief funds created to tackle.
+   */
   const addReliefFundsManager = async (fundsAddress, description) => {
     try {
       if (!checkIfWalletIsConnected()) {
@@ -127,11 +132,16 @@ export const BlockchainContextProvider = (props) => {
       }
 
       const smartContract = getEthereumContract();
-      await smartContract.addReliefFundsManager(fundsAddress, description);
+      const result = await smartContract.addReliefFundsManager(
+        fundsAddress,
+        description
+      );
+      return { hash: result.hash };
     } catch (err) {
       console.log(
         "error occured while trying to add new relief funds manager\n" + err
       );
+      return { error: err.error.message };
     }
   };
 

@@ -40,6 +40,11 @@ contract DRFMS {
         _;
     }
 
+    modifier newReliefFunds(address addr) {
+        require(reliefFundsManagers[addr].createdOn == 0, "already exists");
+        _;
+    }
+
     function addUsage(address fundsAddress, string memory reason, uint256 val, uint256 usedOn) authorizedManager(fundsAddress) public {
         UsageInfo memory info = UsageInfo({
             reason: reason,
@@ -54,7 +59,7 @@ contract DRFMS {
         return usageMapping[fundsAddress];
     }
 
-    function addReliefFundsManager(address fundsAddress, string memory description) public {
+    function addReliefFundsManager(address fundsAddress, string memory description) newReliefFunds(fundsAddress) public {
         ReliefFundsDetails memory details = ReliefFundsDetails({
             description: description,
             manager: msg.sender,
@@ -83,6 +88,14 @@ contract DRFMS {
     function donate(address payable receiver) registeredReliefFunds(receiver) public payable {
         receiver.transfer(msg.value);
         reliefFundsManagers[receiver].totalAmount += msg.value;
+    }
+
+    function removeReliefFunds(address fundsAddress) authorizedManager(fundsAddress) public {
+        reliefFundsManagers[fundsAddress].description = "";
+        reliefFundsManagers[fundsAddress].fundsNeeded = false;
+        reliefFundsManagers[fundsAddress].manager = address(0x0000000000000000000000000000000000000000);
+        reliefFundsManagers[fundsAddress].createdOn = 0;
+        reliefFundsManagers[fundsAddress].totalAmount = 0;
     }
 
     function closeContract() public onlyDeveloper { 

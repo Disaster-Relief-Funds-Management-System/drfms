@@ -1,5 +1,11 @@
+import AddReliefFundsManager from "../../components/AddReliefFundsManager/AddReliefFundsManager";
+
 const Managers = () => {
-  return <>managers</>;
+  return (
+    <>
+      <AddReliefFundsManager />
+    </>
+  );
 };
 
 export default Managers;
