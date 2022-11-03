@@ -91,14 +91,23 @@ export const BlockchainContextProvider = (props) => {
       }
 
       const smartContract = getEthereumContract();
-      const result = await smartContract.viewReliefFundsDetails(fundsAddress);
+      let result = await smartContract.reliefFundsManagers(fundsAddress);
 
-      return result;
+      const formatedResult = {
+        createdOn: result[2].toString() + "000",
+        description: result[0],
+        fundsNeeded: result[4],
+        manager: result[1],
+        totalAmount: ethers.utils.formatEther(result[3]._hex.toString()),
+        fundsAddress: fundsAddress,
+      };
+
+      return { data: formatedResult };
     } catch (err) {
       console.log(
         "error occured while trying to search for relief funds\n" + err
       );
-      return undefined, false; // undefined here refers to some error occured while sending the request
+      return { error: err };
     }
   };
 
@@ -129,7 +138,7 @@ export const BlockchainContextProvider = (props) => {
     try {
       const statusConnected = await checkIfWalletIsConnected();
       if (!statusConnected) {
-        connectWallet();
+        await connectWallet();
       }
 
       const smartContract = getEthereumContract();
@@ -151,7 +160,7 @@ export const BlockchainContextProvider = (props) => {
     try {
       const statusConnected = await checkIfWalletIsConnected();
       if (!statusConnected) {
-        connectWallet();
+        await connectWallet();
       }
 
       val = ethers.utils.parseEther(val);
@@ -176,7 +185,7 @@ export const BlockchainContextProvider = (props) => {
     try {
       const statusConnected = await checkIfWalletIsConnected();
       if (!statusConnected) {
-        connectWallet();
+        await connectWallet();
       }
 
       const smartContract = getEthereumContract();
@@ -193,7 +202,7 @@ export const BlockchainContextProvider = (props) => {
     try {
       const statusConnected = await checkIfWalletIsConnected();
       if (!statusConnected) {
-        connectWallet();
+        await connectWallet();
       }
 
       const smartContract = getEthereumContract();

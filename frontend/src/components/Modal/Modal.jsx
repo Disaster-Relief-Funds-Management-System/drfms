@@ -27,8 +27,8 @@ const ModalOverlay = ({ title, message, dismissModalHandler }) => {
       <header className={styles["header"]}>
         <h2>{title}</h2>
       </header>
-      <div className={styles["content"]}>
-        <p>{message}</p>
+      <div className={`overflow-auto ${styles["content"]}`}>
+        <div>{message}</div>
       </div>
       <footer className={styles["actions"]}>
         <Button onClick={dismissModalHandler} autoFocus={true}>

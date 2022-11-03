@@ -13,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </BlockchainContextProvider>
 );
 
-// TODO return total amount donated from viewReliefFundsDetails function
 // TODO store every donated relief funds in local storage to quickly fetch getUsage(fundsAddress) information on /dashboard page
-// TODO disable buttons (other than search) when not connected
-// TODO functionality: disable funds needed
+// TODO Terminate should also clear usage info.
+// TODO Add halt receiving funds.
+// TODO Tap to show reason on modal.
+// TODO Dashboard for donation history.
+// TODO delete fundsDetails component from local and remote

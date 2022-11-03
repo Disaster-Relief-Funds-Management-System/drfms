@@ -2,25 +2,67 @@ import { useState } from "react";
 import { createRef, useContext } from "react";
 
 import { BlockchainContext } from "../../store/blockchain-context";
-import FundsDetails from "../../components/FundsDetails/FundsDetails";
 import Loader from "../../components/Loader/Loader";
-import { hash } from "../../utils/shortenAddress";
+import Modal from "../../components/Modal/Modal";
+import SearchResult from "../../components/SearchResult/SearchResult";
 
 const Donors = () => {
   const ctx = useContext(BlockchainContext);
-  const [descriptionStatus, setDescriptionStatus] = useState();
+  const [showErrorModal, setShowErrorModal] = useState(undefined);
+  const [showDetailsModal, setShowDetailsModal] = useState(undefined);
   const searchFieldRef = createRef();
   const amountFieldRef = createRef();
 
   const searchButtonHandler = async (e) => {
-    const searchResult = await ctx.searchReliefFunds(
-      searchFieldRef.current.value
-    );
-    setDescriptionStatus({
-      address: searchFieldRef.current.value,
-      description: searchResult[0],
-      status: searchResult[1],
-    });
+    const result = await ctx.searchReliefFunds(searchFieldRef.current.value);
+
+    if (result.error) {
+      const errArray = result.error.split(":");
+      setShowErrorModal({
+        title: errArray[0].trim().toUpperCase(),
+        error: errArray[1].trim().toUpperCase(),
+      });
+    } else {
+      if (
+        result.data.manager === "0x0000000000000000000000000000000000000000"
+      ) {
+        setShowDetailsModal({
+          message: (
+            <SearchResult
+              status="INVALID RELIEF FUNDS"
+              totalAmount="N/A"
+              description="N/A"
+              manager="N/A"
+              fundsAddress="N/A"
+            />
+          ),
+        });
+      } else if (!result.data.fundsNeeded) {
+        setShowDetailsModal({
+          message: (
+            <SearchResult
+              status="NOT ACCEPTING FUNDS"
+              totalAmount={result.data.totalAmount}
+              description={result.data.description}
+              manager={result.data.manager}
+              fundsAddress={result.data.fundsAddress}
+            />
+          ),
+        });
+      } else {
+        setShowDetailsModal({
+          message: (
+            <SearchResult
+              status="ACCEPTING FUNDS"
+              totalAmount={result.data.totalAmount}
+              description={result.data.description}
+              manager={result.data.manager}
+              fundsAddress={result.data.fundsAddress}
+            />
+          ),
+        });
+      }
+    }
   };
 
   const donateHandler = async (e) => {
@@ -35,9 +77,6 @@ const Donors = () => {
     } catch (err) {
       console.log(err.error.message);
     }
-  };
-  const dismissHandler = () => {
-    setDescriptionStatus(undefined);
   };
 
   return (
@@ -91,14 +130,21 @@ const Donors = () => {
         </div>
       </form>
 
-      {descriptionStatus !== undefined ? (
-        <FundsDetails
-          address={hash(descriptionStatus.address)}
-          description={descriptionStatus.description}
-          status={descriptionStatus.status}
-          dismissHandler={dismissHandler}
+      {showDetailsModal && (
+        <Modal
+          dismissModal={setShowDetailsModal}
+          title={"Search Result"}
+          message={showDetailsModal.message}
         />
-      ) : null}
+      )}
+
+      {showErrorModal && (
+        <Modal
+          dismissModal={setShowErrorModal}
+          title={showErrorModal.title}
+          message={showErrorModal.error}
+        />
+      )}
     </div>
   );
 };
