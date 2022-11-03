@@ -186,6 +186,35 @@ export const BlockchainContextProvider = (props) => {
     }
   };
 
+  const getUsage = async (fundsAddress) => {
+    try {
+      if (!checkIfWalletIsConnected()) {
+        connectWallet();
+      }
+
+      const smartContract = getEthereumContract();
+      let result = await smartContract.getUsage(fundsAddress);
+
+      result = result.map((usage, i) => {
+        let d = new Date(0);
+        d.setUTCMilliseconds(usage.usedOn.toString());
+        return [
+          fundsAddress,
+          d.toLocaleDateString(),
+          ethers.utils.formatEther(usage.val.toString()),
+          usage.reason,
+        ];
+      });
+
+      return { data: result };
+    } catch (err) {
+      console.log(
+        "error occured while trying to get usage information\n" + err
+      );
+      return { error: err.error.message };
+    }
+  };
+
   return (
     <BlockchainContext.Provider
       value={{
@@ -196,6 +225,7 @@ export const BlockchainContextProvider = (props) => {
         donateIsLoading,
         addReliefFundsManager,
         addUsage,
+        getUsage,
         closeFunds,
       }}
     >

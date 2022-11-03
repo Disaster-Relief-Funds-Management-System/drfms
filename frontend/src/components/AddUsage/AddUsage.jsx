@@ -75,8 +75,9 @@ const AddUsage = () => {
           </div>
           <input
             required
+            title="Please enter your LOCAL date at which the funds were used."
             ref={dateRef}
-            type="date"
+            type="datetime-local"
             id="date"
             className="form-control"
           />

@@ -5,7 +5,7 @@ import classes from "./MainNavigation.module.css";
 import { BlockchainContext } from "../../store/blockchain-context";
 
 const MainNavigation = () => {
-  const { connectWallet } = useContext(BlockchainContext);
+  const { connectedWallet, connectWallet } = useContext(BlockchainContext);
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -73,7 +73,7 @@ const MainNavigation = () => {
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
                 <button className="btn btn-primary" onClick={connectWallet}>
-                  Connect Wallet
+                  {connectedWallet !== "" ? "Connected" : "Connect Wallet"}
                 </button>
               </li>
             </ul>
