@@ -127,7 +127,8 @@ export const BlockchainContextProvider = (props) => {
    */
   const addReliefFundsManager = async (fundsAddress, description) => {
     try {
-      if (!checkIfWalletIsConnected()) {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
         connectWallet();
       }
 
@@ -148,7 +149,8 @@ export const BlockchainContextProvider = (props) => {
   // addUsage(address fundsAddress, string memory reason, uint256 val, uint256 usedOn) authorizedManager(fundsAddress) public {
   const addUsage = async (fundsAddress, reason, val, usedOn) => {
     try {
-      if (!checkIfWalletIsConnected()) {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
         connectWallet();
       }
 
@@ -172,7 +174,8 @@ export const BlockchainContextProvider = (props) => {
 
   const closeFunds = async (fundsAddress) => {
     try {
-      if (!checkIfWalletIsConnected()) {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
         connectWallet();
       }
 
@@ -188,7 +191,8 @@ export const BlockchainContextProvider = (props) => {
 
   const getUsage = async (fundsAddress) => {
     try {
-      if (!checkIfWalletIsConnected()) {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
         connectWallet();
       }
 
