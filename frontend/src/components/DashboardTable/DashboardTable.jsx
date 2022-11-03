@@ -87,9 +87,6 @@ const DashboardTable = ({ data }) => {
                 <td>{col[2]}</td>
                 <td>{col[3]}</td>
               </tr>
-              // {col.map((el, j) => {
-              //   return <td key={j}>{el}</td>;
-              // })}
             );
           })}
         </tbody>
