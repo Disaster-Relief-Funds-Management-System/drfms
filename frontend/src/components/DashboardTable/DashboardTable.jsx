@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
+import classes from "./DashboardTable.module.css";
+
 const DashboardTable = ({ data }) => {
   const [showReasonModal, setShowReasonModal] = useState(undefined);
   const [sortingOrder, setSortingOrder] = useState([true, true, true, true]);
@@ -44,7 +46,7 @@ const DashboardTable = ({ data }) => {
   return (
     <div className="table-responsive">
       <table className="table table-striped table-hover table-bordered">
-        <thead>
+        <thead className={classes["table-heading"]}>
           <tr>
             <th
               onClick={() => {
