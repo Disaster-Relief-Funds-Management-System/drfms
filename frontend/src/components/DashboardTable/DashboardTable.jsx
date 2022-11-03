@@ -46,7 +46,7 @@ const DashboardTable = ({ data }) => {
   return (
     <div className="table-responsive">
       <table className="table table-striped table-hover table-bordered">
-        <thead className={classes["table-heading"]}>
+        <thead className={`table-group-divider ${classes["table-heading"]}`}>
           <tr>
             <th
               onClick={() => {
@@ -78,7 +78,7 @@ const DashboardTable = ({ data }) => {
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="table-group-divider">
           {dataState.map((col, i) => {
             return (
               <tr key={i}>
