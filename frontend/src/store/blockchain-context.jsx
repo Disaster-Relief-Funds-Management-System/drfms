@@ -85,9 +85,9 @@ export const BlockchainContextProvider = (props) => {
    */
   const searchReliefFunds = async (fundsAddress) => {
     try {
-      if (!ethereum) {
-        alert(ALERT_INSTALL_METAMASK);
-        return;
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
       }
 
       const smartContract = getEthereumContract();
@@ -117,6 +117,11 @@ export const BlockchainContextProvider = (props) => {
    * @param {string} amount amount to donate
    */
   const donate = async (receiver, amount) => {
+    const statusConnected = await checkIfWalletIsConnected();
+    if (!statusConnected) {
+      await connectWallet();
+    }
+
     // receiver = same as fundsAddress before
     const options = { value: ethers.utils.parseEther(amount) };
     const smartContract = getEthereumContract();
