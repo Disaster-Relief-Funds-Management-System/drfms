@@ -16,3 +16,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 // TODO return total amount donated from viewReliefFundsDetails function
 // TODO store every donated relief funds in local storage to quickly fetch getUsage(fundsAddress) information on /dashboard page
 // TODO disable buttons (other than search) when not connected
+// TODO functionality: disable funds needed
