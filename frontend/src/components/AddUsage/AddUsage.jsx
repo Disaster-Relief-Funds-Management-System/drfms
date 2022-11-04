@@ -3,13 +3,14 @@ import { createRef } from "react";
 import { BlockchainContext } from "../../store/blockchain-context";
 import { hash } from "../../utils/shortenAddress";
 import Modal from "../Modal/Modal";
+import Loader from "../Loader/Loader";
 
 const AddUsage = () => {
   const fundsAddressRef = createRef();
   const usageInfoRef = createRef(); // a.k.a. reason
   const dateRef = createRef();
   const usedAmountRef = createRef();
-  const { addUsage } = useContext(BlockchainContext);
+  const { addUsage, isLoading } = useContext(BlockchainContext);
   const [showSuccessModal, setShowSuccessModal] = useState(undefined);
   const [showErrorModal, setShowErrorModal] = useState(undefined);
 
@@ -100,12 +101,10 @@ const AddUsage = () => {
         <div className="d-grid col-6 mx-auto">
           <button
             className="btn btn-primary"
-            // disabled={ctx.donateIsLoading}
+            disabled={isLoading.addUsageInfo}
             type="submit"
           >
-            {/* {ctx.donateIsLoading ? <Loader /> :  */}
-            Add Usage
-            {/* } */}
+            {isLoading.addUsageInfo ? <Loader /> : "Add Usage"}
           </button>
         </div>
       </form>

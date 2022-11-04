@@ -2,11 +2,13 @@ import { useContext } from "react";
 import { useState } from "react";
 import { createRef } from "react";
 import { BlockchainContext } from "../../store/blockchain-context";
+import Loader from "../Loader/Loader";
 import Modal from "../Modal/Modal";
 
 const ToggleFundsStatus = () => {
   const fundsAddressRef = createRef();
-  const { searchReliefFunds, toggleFunds } = useContext(BlockchainContext);
+  const { searchReliefFunds, toggleFunds, isLoading } =
+    useContext(BlockchainContext);
   const [showSuccessModal, setShowSuccessModal] = useState(undefined);
   const [showErrorModal, setShowErrorModal] = useState(undefined);
 
@@ -33,7 +35,7 @@ const ToggleFundsStatus = () => {
         message: (
           <>
             <em>
-              <strong>Relief Funds </strong>
+              <strong>Relief Fund</strong>
             </em>
             <br />
             <a
@@ -76,8 +78,12 @@ const ToggleFundsStatus = () => {
           </label>
         </div>
         <div className="d-grid col-6 mx-auto">
-          <button className="btn btn-warning" type="submit">
-            Toggle Status
+          <button
+            className="btn btn-warning"
+            type="submit"
+            disabled={isLoading.toggleState}
+          >
+            {isLoading.toggleState ? <Loader /> : "Toggle Status"}
           </button>
         </div>
       </form>

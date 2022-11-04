@@ -28,7 +28,13 @@ const getEthereumContract = () => {
 
 export const BlockchainContextProvider = (props) => {
   const [connectedWallet, setConnectedWallet] = useState("");
-  const [donateIsLoading, setDonateIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    donate: false,
+    generateNewReliefFunds: false,
+    addUsageInfo: false,
+    toggleState: false,
+    deleteReliefFunds: false,
+  });
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -128,9 +134,13 @@ export const BlockchainContextProvider = (props) => {
       const smartContract = getEthereumContract();
       const txHash = await smartContract.donate(receiver, options);
       console.log(`Loading - ${txHash.hash}`);
-      setDonateIsLoading(true);
+      setIsLoading((prevState) => {
+        return { ...prevState, donate: true };
+      });
       await txHash.wait();
-      setDonateIsLoading(false);
+      setIsLoading((prevState) => {
+        return { ...prevState, donate: false };
+      });
       console.log(`Confirmed - ${txHash.hash}`);
       return { hash: txHash.hash };
     } catch (err) {
@@ -186,6 +196,15 @@ export const BlockchainContextProvider = (props) => {
         fundsAddress,
         description
       );
+
+      setIsLoading((prevState) => {
+        return { ...prevState, generateNewReliefFunds: true };
+      });
+      await result.wait();
+      setIsLoading((prevState) => {
+        return { ...prevState, generateNewReliefFunds: false };
+      });
+
       return { hash: result.hash };
     } catch (err) {
       console.log(
@@ -212,6 +231,15 @@ export const BlockchainContextProvider = (props) => {
         val,
         usedOn
       );
+
+      setIsLoading((prevState) => {
+        return { ...prevState, addUsageInfo: true };
+      });
+      await result.wait();
+      setIsLoading((prevState) => {
+        return { ...prevState, addUsageInfo: false };
+      });
+
       return { hash: result.hash };
     } catch (err) {
       console.log(
@@ -230,7 +258,15 @@ export const BlockchainContextProvider = (props) => {
 
       const smartContract = getEthereumContract();
       const result = await smartContract.toggleFundsNeeded(fundsAddress);
+
+      setIsLoading((prevState) => {
+        return { ...prevState, toggleState: true };
+      });
       await result.wait();
+      setIsLoading((prevState) => {
+        return { ...prevState, toggleState: false };
+      });
+
       return { hash: result.hash };
     } catch (err) {
       console.log(
@@ -248,6 +284,14 @@ export const BlockchainContextProvider = (props) => {
 
       const smartContract = getEthereumContract();
       const result = await smartContract.removeReliefFunds(fundsAddress);
+
+      setIsLoading((prevState) => {
+        return { ...prevState, deleteReliefFunds: true };
+      });
+      await result.wait();
+      setIsLoading((prevState) => {
+        return { ...prevState, deleteReliefFunds: false };
+      });
 
       return { hash: result.hash };
     } catch (err) {
@@ -289,11 +333,11 @@ export const BlockchainContextProvider = (props) => {
   return (
     <BlockchainContext.Provider
       value={{
+        isLoading,
         connectedWallet,
         connectWallet,
         searchReliefFunds,
         donate,
-        donateIsLoading,
         getDonationHistory,
         addReliefFundsManager,
         addUsage,

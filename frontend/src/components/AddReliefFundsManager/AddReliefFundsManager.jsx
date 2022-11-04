@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createRef, useContext } from "react";
 import { BlockchainContext } from "../../store/blockchain-context";
 import { hash } from "../../utils/shortenAddress";
+import Loader from "../Loader/Loader";
 import Modal from "../Modal/Modal";
 
 const AddReliefFundsManager = () => {
@@ -10,7 +11,7 @@ const AddReliefFundsManager = () => {
   const [showModal, setShowModal] = useState(undefined);
   const [errorModal, setErrorModal] = useState(undefined);
 
-  const { addReliefFundsManager } = useContext(BlockchainContext);
+  const { addReliefFundsManager, isLoading } = useContext(BlockchainContext);
 
   const generateHandler = async (e) => {
     e.preventDefault();
@@ -64,8 +65,12 @@ const AddReliefFundsManager = () => {
           </label>
         </div>
         <div className="d-grid col-6 mx-auto">
-          <button className="btn btn-primary" type="submit">
-            Generate
+          <button
+            className="btn btn-primary"
+            type="submit"
+            disabled={isLoading.generateNewReliefFunds}
+          >
+            {isLoading.generateNewReliefFunds ? <Loader /> : "Generate"}
           </button>
         </div>
       </form>

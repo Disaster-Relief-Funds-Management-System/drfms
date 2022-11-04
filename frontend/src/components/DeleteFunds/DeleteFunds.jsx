@@ -4,10 +4,11 @@ import { createRef } from "react";
 import { BlockchainContext } from "../../store/blockchain-context";
 import { hash } from "../../utils/shortenAddress";
 import Modal from "../Modal/Modal";
+import Loader from "../Loader/Loader";
 
 const DeleteFunds = () => {
   const fundsAddressRef = createRef();
-  const { deleteFunds } = useContext(BlockchainContext);
+  const { deleteFunds, isLoading } = useContext(BlockchainContext);
   const [showSuccessModal, setShowSuccessModal] = useState(undefined);
   const [showErrorModal, setShowErrorModal] = useState(undefined);
 
@@ -52,12 +53,10 @@ const DeleteFunds = () => {
         <div className="d-grid col-6 mx-auto">
           <button
             className="btn btn-danger"
-            // disabled={ctx.donateIsLoading}
+            disabled={isLoading.deleteReliefFunds}
             type="submit"
           >
-            {/* {ctx.donateIsLoading ? <Loader /> :  */}
-            Delete Relief Funds
-            {/* } */}
+            {isLoading.deleteReliefFunds ? <Loader /> : "Delete Relief Funds"}
           </button>
         </div>
       </form>

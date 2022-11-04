@@ -130,10 +130,10 @@ const Donors = () => {
         <div className="d-grid col-6 mx-auto">
           <button
             className="btn btn-primary"
-            disabled={ctx.donateIsLoading}
+            disabled={ctx.isLoading.donate}
             type="submit"
           >
-            {ctx.donateIsLoading ? <Loader /> : "Donate"}
+            {ctx.isLoading.donate ? <Loader /> : "Donate"}
           </button>
         </div>
       </form>
