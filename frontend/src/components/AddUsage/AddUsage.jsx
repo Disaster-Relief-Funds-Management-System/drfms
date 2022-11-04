@@ -93,9 +93,9 @@ const AddUsage = () => {
               type="number"
               id="amount"
               className="form-control"
-              placeholder="Enter donation amount here."
+              placeholder="Enter how much amoung was used here."
             />
-            <label htmlFor="amount">Donation Amount</label>
+            <label htmlFor="amount">Amount Used</label>
           </div>
         </div>
         <div className="d-grid col-6 mx-auto">
