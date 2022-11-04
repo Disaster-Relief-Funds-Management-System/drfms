@@ -11,7 +11,7 @@ const DeleteFunds = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(undefined);
   const [showErrorModal, setShowErrorModal] = useState(undefined);
 
-  const closeFundsSubmitHandler = async (e) => {
+  const deleteFundsSubmitHandler = async (e) => {
     e.preventDefault();
 
     const fundsAddress = fundsAddressRef.current.value;
@@ -26,7 +26,7 @@ const DeleteFunds = () => {
       });
     } else {
       setShowSuccessModal({
-        title: "Successfully Closed the Relief Funds",
+        title: "Successfully Deleted the Relief Funds",
         hash: result.hash,
         fundsAddress: fundsAddress,
       });
@@ -34,7 +34,7 @@ const DeleteFunds = () => {
   };
   return (
     <div className="container mb-5">
-      <form onSubmit={closeFundsSubmitHandler}>
+      <form onSubmit={deleteFundsSubmitHandler}>
         <legend className="mt-5">Terminate Relief Funds</legend>
         <div className="form-floating my-3">
           <input
@@ -56,7 +56,7 @@ const DeleteFunds = () => {
             type="submit"
           >
             {/* {ctx.donateIsLoading ? <Loader /> :  */}
-            Terminate
+            Delete Relief Funds
             {/* } */}
           </button>
         </div>
