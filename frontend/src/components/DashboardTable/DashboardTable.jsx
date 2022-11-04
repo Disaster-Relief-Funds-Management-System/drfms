@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import classes from "./DashboardTable.module.css";
 
-const DashboardTable = ({ data }) => {
+const DashboardTable = ({ headings, data }) => {
   const [showReasonModal, setShowReasonModal] = useState(undefined);
   const [sortingOrder, setSortingOrder] = useState([true, true, true, true]);
   const [dataState, setDataState] = useState([]);
@@ -53,28 +53,28 @@ const DashboardTable = ({ data }) => {
                 clickHandler(0);
               }}
             >
-              Funds Address
+              {headings[0]}
             </th>
             <th
               onClick={() => {
                 clickHandler(1);
               }}
             >
-              Used On
+              {headings[1]}
             </th>
             <th
               onClick={() => {
                 clickHandler(2);
               }}
             >
-              Amount (ETH)
+              {headings[2]}
             </th>
             <th
               onClick={() => {
                 clickHandler(3);
               }}
             >
-              Reason
+              {headings[3]}
             </th>
           </tr>
         </thead>

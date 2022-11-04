@@ -10,6 +10,8 @@ const Donors = () => {
   const ctx = useContext(BlockchainContext);
   const [showErrorModal, setShowErrorModal] = useState(undefined);
   const [showDetailsModal, setShowDetailsModal] = useState(undefined);
+  const [showDonationSuccessfulModal, setShowDonationSuccessfulModal] =
+    useState(undefined);
   const searchFieldRef = createRef();
   const amountFieldRef = createRef();
 
@@ -41,7 +43,7 @@ const Donors = () => {
         setShowDetailsModal({
           message: (
             <SearchResult
-              status="NOT ACCEPTING FUNDS"
+              status="NOT ACCEPTING DONATIONS"
               totalAmount={result.data.totalAmount}
               description={result.data.description}
               manager={result.data.manager}
@@ -53,7 +55,7 @@ const Donors = () => {
         setShowDetailsModal({
           message: (
             <SearchResult
-              status="ACCEPTING FUNDS"
+              status="ACCEPTING DONATIONS"
               totalAmount={result.data.totalAmount}
               description={result.data.description}
               manager={result.data.manager}
@@ -66,16 +68,22 @@ const Donors = () => {
   };
 
   const donateHandler = async (e) => {
-    // TODO try catch so to display message to user
-    // TODO display ehterscan with txhash
     e.preventDefault();
-    try {
-      const result = await ctx.donate(
-        searchFieldRef.current.value,
-        amountFieldRef.current.value
-      );
-    } catch (err) {
-      console.log(err.error.message);
+
+    const result = await ctx.donate(
+      searchFieldRef.current.value,
+      amountFieldRef.current.value
+    );
+
+    if (result.error) {
+      setShowErrorModal({
+        title: "DONATION UNSUCCESSFUL",
+        error: result.error,
+      });
+    } else {
+      setShowDonationSuccessfulModal({
+        txHash: result.hash,
+      });
     }
   };
 
@@ -143,6 +151,25 @@ const Donors = () => {
           dismissModal={setShowErrorModal}
           title={showErrorModal.title}
           message={showErrorModal.error}
+        />
+      )}
+
+      {showDonationSuccessfulModal && (
+        <Modal
+          dismissModal={setShowDonationSuccessfulModal}
+          title="DONATION SUCCESSFUL"
+          message={
+            <>
+              <strong>Thank you for your donation! 🙏🏼</strong>
+
+              <br />
+              <a
+                href={`https://goerli.etherscan.io/tx/${showDonationSuccessfulModal.txHash}`}
+              >
+                {showDonationSuccessfulModal.txHash}
+              </a>
+            </>
+          }
         />
       )}
     </div>

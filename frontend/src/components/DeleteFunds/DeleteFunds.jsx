@@ -5,9 +5,9 @@ import { BlockchainContext } from "../../store/blockchain-context";
 import { hash } from "../../utils/shortenAddress";
 import Modal from "../Modal/Modal";
 
-const CloseFunds = () => {
+const DeleteFunds = () => {
   const fundsAddressRef = createRef();
-  const { closeFunds } = useContext(BlockchainContext);
+  const { deleteFunds } = useContext(BlockchainContext);
   const [showSuccessModal, setShowSuccessModal] = useState(undefined);
   const [showErrorModal, setShowErrorModal] = useState(undefined);
 
@@ -15,7 +15,7 @@ const CloseFunds = () => {
     e.preventDefault();
 
     const fundsAddress = fundsAddressRef.current.value;
-    const result = await closeFunds(fundsAddress);
+    const result = await deleteFunds(fundsAddress);
 
     if (result.error) {
       console.log(result.error);
@@ -102,4 +102,4 @@ const CloseFunds = () => {
   );
 };
 
-export default CloseFunds;
+export default DeleteFunds;

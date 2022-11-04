@@ -13,9 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </BlockchainContextProvider>
 );
 
-// TODO store every donated relief funds in local storage to quickly fetch getUsage(fundsAddress) information on /dashboard page
-// TODO Terminate should also clear usage info.
-// TODO Add halt receiving funds.
 // TODO Tap to show reason on modal.
-// TODO Dashboard for donation history.
+// TODO store every donated relief funds in local storage to quickly fetch getUsage(fundsAddress) information on /dashboard page <= use localstore + context api to get/store donated address
+
 // TODO delete fundsDetails component from local and remote

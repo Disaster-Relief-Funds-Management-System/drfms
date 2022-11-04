@@ -117,21 +117,56 @@ export const BlockchainContextProvider = (props) => {
    * @param {string} amount amount to donate
    */
   const donate = async (receiver, amount) => {
-    const statusConnected = await checkIfWalletIsConnected();
-    if (!statusConnected) {
-      await connectWallet();
-    }
+    try {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
+      }
 
-    // receiver = same as fundsAddress before
-    const options = { value: ethers.utils.parseEther(amount) };
-    const smartContract = getEthereumContract();
-    const txHash = await smartContract.donate(receiver, options);
-    console.log(`Loading - ${txHash.hash}`);
-    setDonateIsLoading(true);
-    await txHash.wait();
-    setDonateIsLoading(false);
-    console.log(`Confirmed - ${txHash.hash}`);
-    return txHash;
+      // receiver = same as fundsAddress before
+      const options = { value: ethers.utils.parseEther(amount) };
+      const smartContract = getEthereumContract();
+      const txHash = await smartContract.donate(receiver, options);
+      console.log(`Loading - ${txHash.hash}`);
+      setDonateIsLoading(true);
+      await txHash.wait();
+      setDonateIsLoading(false);
+      console.log(`Confirmed - ${txHash.hash}`);
+      return { hash: txHash.hash };
+    } catch (err) {
+      console.log("error occured while trying to donate\n" + err);
+      return { error: err.error.message };
+    }
+  };
+
+  const getDonationHistory = async (fundsAddress) => {
+    try {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
+      }
+
+      const smartContract = getEthereumContract();
+      let result = await smartContract.getDonationHistory(fundsAddress);
+
+      result = result.map((donation, i) => {
+        let d = new Date(0);
+        d.setUTCMilliseconds(donation.donatedOn.toString() + "000");
+        return [
+          fundsAddress,
+          d.toLocaleDateString(),
+          ethers.utils.formatEther(donation.val.toString()),
+          donation.donor,
+        ];
+      });
+
+      return { donationHistory: result };
+    } catch (err) {
+      console.log(
+        "error occured while trying to get usage information\n" + err
+      );
+      return { error: err.error.message };
+    }
   };
 
   /**
@@ -186,7 +221,25 @@ export const BlockchainContextProvider = (props) => {
     }
   };
 
-  const closeFunds = async (fundsAddress) => {
+  const toggleFunds = async (fundsAddress) => {
+    try {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
+      }
+
+      const smartContract = getEthereumContract();
+      const result = await smartContract.toggleFundsNeeded(fundsAddress);
+      await result.wait();
+      return { hash: result.hash };
+    } catch (err) {
+      console.log(
+        "error occured while trying to toggle funds needed status\n" + err
+      );
+      return { error: err };
+    }
+  };
+  const deleteFunds = async (fundsAddress) => {
     try {
       const statusConnected = await checkIfWalletIsConnected();
       if (!statusConnected) {
@@ -241,10 +294,12 @@ export const BlockchainContextProvider = (props) => {
         searchReliefFunds,
         donate,
         donateIsLoading,
+        getDonationHistory,
         addReliefFundsManager,
         addUsage,
         getUsage,
-        closeFunds,
+        toggleFunds,
+        deleteFunds,
       }}
     >
       {props.children}

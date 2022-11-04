@@ -21,9 +21,16 @@ contract DRFMS {
         uint256 val;
         uint256 usedOn; // epochs in frontend
     }
+
+    struct DonationInfo {
+        address donor;
+        uint256 val;
+        uint256 donatedOn; // in seconds
+    }
     
     mapping(address => ReliefFundsDetails) public reliefFundsManagers;
     mapping(address => UsageInfo[]) internal usageMapping;
+    mapping(address => DonationInfo[]) internal donationHistoryMapping;
 
     modifier onlyDeveloper() {
         require(msg.sender == developer);
@@ -41,7 +48,12 @@ contract DRFMS {
     }
 
     modifier newReliefFunds(address addr) {
-        require(reliefFundsManagers[addr].createdOn == 0, "already exists");
+        require(reliefFundsManagers[addr].createdOn == 0, "Relief funds already exists.");
+        _;
+    }
+
+    modifier reliefFundsExists(address addr) {
+        require(reliefFundsManagers[addr].createdOn != 0, "Relief funds does not exist.");
         _;
     }
 
@@ -88,6 +100,22 @@ contract DRFMS {
     function donate(address payable receiver) registeredReliefFunds(receiver) public payable {
         receiver.transfer(msg.value);
         reliefFundsManagers[receiver].totalAmount += msg.value;
+
+        DonationInfo memory donationInfo = DonationInfo({
+            val: msg.value,
+            donor: address(msg.sender),
+            donatedOn: block.timestamp
+        });
+        donationHistoryMapping[receiver].push(donationInfo);
+    }
+
+    function getDonationHistory(address fundsAddress) public view returns(DonationInfo[] memory) {
+        return donationHistoryMapping[fundsAddress];
+    }
+
+    function toggleFundsNeeded(address fundsAddress) reliefFundsExists(fundsAddress) authorizedManager(fundsAddress) public returns(bool){
+        reliefFundsManagers[fundsAddress].fundsNeeded = !reliefFundsManagers[fundsAddress].fundsNeeded;
+        return reliefFundsManagers[fundsAddress].fundsNeeded;
     }
 
     function removeReliefFunds(address fundsAddress) authorizedManager(fundsAddress) public {
@@ -96,6 +124,9 @@ contract DRFMS {
         reliefFundsManagers[fundsAddress].manager = address(0x0000000000000000000000000000000000000000);
         reliefFundsManagers[fundsAddress].createdOn = 0;
         reliefFundsManagers[fundsAddress].totalAmount = 0;
+
+        delete usageMapping[fundsAddress];
+        delete donationHistoryMapping[fundsAddress];
     }
 
     function closeContract() public onlyDeveloper { 
