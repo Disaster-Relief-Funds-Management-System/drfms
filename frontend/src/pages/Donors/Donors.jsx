@@ -118,8 +118,8 @@ const Donors = () => {
             <input
               required
               ref={amountFieldRef}
-              step="0.00000001"
-              min="0.00000001"
+              step="0.00001"
+              min="0.00001"
               max={Infinity}
               type="number"
               id="amount"
