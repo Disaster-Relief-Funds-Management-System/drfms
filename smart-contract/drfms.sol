@@ -14,6 +14,7 @@ contract DRFMS {
         uint256 createdOn;
         uint256 totalAmount;
         bool fundsNeeded;
+        uint256 remainingUsage; // remaining amount whose usage hasn't been displayed yet
     }
 
     struct UsageInfo {
@@ -57,7 +58,12 @@ contract DRFMS {
         _;
     }
 
-    function addUsage(address fundsAddress, string memory reason, uint256 val, uint256 usedOn) authorizedManager(fundsAddress) public {
+    modifier shouldHaveRemainingAmount(address addr, uint256 val) {
+        require(reliefFundsManagers[addr].remainingUsage >= val, "Invalid request. You are trying to add usage info.for the amount which is greater than what's remaining.");
+        _;
+    }
+
+    function addUsage(address fundsAddress, string memory reason, uint256 val, uint256 usedOn) authorizedManager(fundsAddress) shouldHaveRemainingAmount(fundsAddress, val) public {
         UsageInfo memory info = UsageInfo({
             reason: reason,
             val: val,
@@ -65,6 +71,7 @@ contract DRFMS {
         });
 
         usageMapping[fundsAddress].push(info);
+        reliefFundsManagers[fundsAddress].remainingUsage -= val;
     }
 
     function getUsage(address fundsAddress) public view returns (UsageInfo[] memory) {
@@ -77,7 +84,8 @@ contract DRFMS {
             manager: msg.sender,
             createdOn: block.timestamp,
             totalAmount: 0,
-            fundsNeeded: true
+            fundsNeeded: true,
+            remainingUsage: 0
         });
 
         reliefFundsManagers[fundsAddress] = details;
@@ -100,6 +108,7 @@ contract DRFMS {
     function donate(address payable receiver) registeredReliefFunds(receiver) public payable {
         receiver.transfer(msg.value);
         reliefFundsManagers[receiver].totalAmount += msg.value;
+        reliefFundsManagers[receiver].remainingUsage += msg.value;
 
         DonationInfo memory donationInfo = DonationInfo({
             val: msg.value,
@@ -124,6 +133,7 @@ contract DRFMS {
         reliefFundsManagers[fundsAddress].manager = address(0x0000000000000000000000000000000000000000);
         reliefFundsManagers[fundsAddress].createdOn = 0;
         reliefFundsManagers[fundsAddress].totalAmount = 0;
+        reliefFundsManagers[fundsAddress].remainingUsage = 0;
 
         delete usageMapping[fundsAddress];
         delete donationHistoryMapping[fundsAddress];

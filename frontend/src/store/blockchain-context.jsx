@@ -99,6 +99,8 @@ export const BlockchainContextProvider = (props) => {
       const smartContract = getEthereumContract();
       let result = await smartContract.reliefFundsManagers(fundsAddress);
 
+      console.log(result);
+
       const formatedResult = {
         createdOn: result[2].toString() + "000",
         description: result[0],

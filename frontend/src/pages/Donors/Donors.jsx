@@ -118,7 +118,9 @@ const Donors = () => {
             <input
               required
               ref={amountFieldRef}
-              step="0.00001"
+              step="0.00000001"
+              min="0.00000001"
+              max={Infinity}
               type="number"
               id="amount"
               className="form-control"
