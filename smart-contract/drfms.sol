@@ -135,8 +135,8 @@ contract DRFMS {
         reliefFundsManagers[fundsAddress].totalAmount = 0;
         reliefFundsManagers[fundsAddress].remainingUsage = 0;
 
-        delete usageMapping[fundsAddress];
-        delete donationHistoryMapping[fundsAddress];
+        // delete usageMapping[fundsAddress];
+        // delete donationHistoryMapping[fundsAddress];
     }
 
     function closeContract() public onlyDeveloper { 
