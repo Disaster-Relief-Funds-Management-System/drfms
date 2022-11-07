@@ -9,6 +9,8 @@ const Dashboard = () => {
   const [showErrorModal, setShowErrorModal] = useState(undefined);
   const [data, setData] = useState([]);
   const [donationHistory, setDonationHistory] = useState([]);
+  const [usageDataRequested, setUsageDataRequested] = useState(false);
+  const [historyDataRequested, setHistoryDataRequested] = useState(false);
   const { getUsage, getDonationHistory } = useContext(BlockchainContext);
   const fundsAddressRef = createRef();
 
@@ -27,6 +29,7 @@ const Dashboard = () => {
       });
     } else {
       setData(result.data);
+      setUsageDataRequested(true);
     }
   };
 
@@ -46,6 +49,7 @@ const Dashboard = () => {
     } else {
       setDonationHistory(result.donationHistory);
       console.log(result.donationHistory);
+      setHistoryDataRequested(true);
     }
   };
 
@@ -82,18 +86,34 @@ const Dashboard = () => {
           </button>
         </div>
       </form>
-      {data.length > 0 && (
+      {data.length > 0 ? (
         <DashboardTable
           headings={["Funds Address", "Used On", "Amount (ETH)", "Reason"]}
           data={data}
         />
+      ) : (
+        usageDataRequested && (
+          <Modal
+            title={"NO DATA PROVIDED"}
+            message="The funds managers has not provided any usage data yet. Please contact them."
+            dismissModal={setUsageDataRequested}
+          />
+        )
       )}
 
-      {donationHistory.length > 0 && (
+      {donationHistory.length > 0 ? (
         <DashboardTable
           headings={["Funds Address", "Donated On", "Amount (ETH)", "Donor"]}
           data={donationHistory}
         />
+      ) : (
+        historyDataRequested && (
+          <Modal
+            title={"NO DATA AVAILABLE"}
+            message="There hasn't been any donations to this relief fund."
+            dismissModal={setHistoryDataRequested}
+          />
+        )
       )}
       {showErrorModal && (
         <Modal
