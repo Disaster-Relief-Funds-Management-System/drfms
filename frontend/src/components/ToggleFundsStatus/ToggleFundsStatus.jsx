@@ -19,8 +19,9 @@ const ToggleFundsStatus = () => {
     const result = await toggleFunds(fundsAddress);
 
     if (result.error) {
-      console.log(result.error);
-      const errArray = result.error.split(":");
+      console.log("hererererere  ........\n\n\n\n");
+      console.log(result.error.error.message);
+      const errArray = result.error.error.message.split(":");
       setShowErrorModal({
         title: errArray[0].trim().toUpperCase(),
         error: errArray[1].trim().toUpperCase(),
