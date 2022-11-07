@@ -95,7 +95,7 @@ const Dashboard = () => {
         usageDataRequested && (
           <Modal
             title={"NO DATA PROVIDED"}
-            message="The funds managers has not provided any usage data yet. Please contact them."
+            message="The funds manager has not provided any usage data yet. Please contact them."
             dismissModal={setUsageDataRequested}
           />
         )
