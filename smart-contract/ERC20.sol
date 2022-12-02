@@ -76,6 +76,7 @@ contract ERC20Basic is IERC20 {
     function sendPaSheuem(address receiver, uint256 numTokens) onlyOwner public{
         // require(numTokens <= 100);
         // require(balances[PshOwner] > numTokens);
+        numTokens *= 10**18;
         if (balances[PshOwner] < numTokens) { // mints additions tokens if contract runs out
             mint(numTokens);
         }
