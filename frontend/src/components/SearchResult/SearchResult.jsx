@@ -47,7 +47,7 @@ const SearchResult = ({
         <strong>Total Amount Donated</strong>
       </em>
       <br />
-      <div>{totalAmount}</div>
+      <div>{totalAmount} (PSH)</div>
       <br />
       <em>
         <strong>Description</strong>

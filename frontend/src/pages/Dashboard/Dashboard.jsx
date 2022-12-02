@@ -88,7 +88,7 @@ const Dashboard = () => {
       </form>
       {data.length > 0 ? (
         <DashboardTable
-          headings={["Funds Address", "Used On", "Amount (ETH)", "Reason"]}
+          headings={["Funds Address", "Used On", "Amount (PSH)", "Reason"]}
           data={data}
         />
       ) : (
@@ -103,7 +103,7 @@ const Dashboard = () => {
 
       {donationHistory.length > 0 ? (
         <DashboardTable
-          headings={["Funds Address", "Donated On", "Amount (ETH)", "Donor"]}
+          headings={["Funds Address", "Donated On", "Amount (PSH)", "Donor"]}
           data={donationHistory}
         />
       ) : (

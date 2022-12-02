@@ -84,7 +84,7 @@ const AddUsage = () => {
           />
         </div>
         <div className="input-group mb-3">
-          <div className="input-group-text">ETH</div>
+          <div className="input-group-text">PSH</div>
           <div className="form-floating">
             <input
               required
