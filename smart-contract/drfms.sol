@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+import "./ERC20.sol";
 
-contract DRFMS {
+contract DRFMS is ERC20Basic {
     address payable developer;
     
     constructor() {
@@ -95,23 +96,13 @@ contract DRFMS {
         return (reliefFundsManagers[fundsAddress].description, reliefFundsManagers[fundsAddress].fundsNeeded);
     }
     
-    // TODO: Remove ReliefFundsDetails from reliefFundsManager after efforts are done.
-    // Question: What to do with the rest of the donations?
-
-    /**
-    * Following section is for transfering donations.
-    *
-    * 1. Check if the address is a registered funds' address.
-    * 2. Transfer the funds.
-    * 3. Increase the totalAmount variable for said address mapping.
-    */
-    function donate(address payable receiver) registeredReliefFunds(receiver) public payable {
-        receiver.transfer(msg.value);
-        reliefFundsManagers[receiver].totalAmount += msg.value;
-        reliefFundsManagers[receiver].remainingUsage += msg.value;
+    function donate(address receiver, uint256 numTokens) registeredReliefFunds(receiver) public payable {
+        transfer(receiver, numTokens);
+        reliefFundsManagers[receiver].totalAmount += numTokens;
+        reliefFundsManagers[receiver].remainingUsage += numTokens;
 
         DonationInfo memory donationInfo = DonationInfo({
-            val: msg.value,
+            val: numTokens,
             donor: address(msg.sender),
             donatedOn: block.timestamp
         });
@@ -128,12 +119,15 @@ contract DRFMS {
     }
 
     function removeReliefFunds(address fundsAddress) authorizedManager(fundsAddress) public {
-        reliefFundsManagers[fundsAddress].description = "";
-        reliefFundsManagers[fundsAddress].fundsNeeded = false;
-        reliefFundsManagers[fundsAddress].manager = address(0x0000000000000000000000000000000000000000);
-        reliefFundsManagers[fundsAddress].createdOn = 0;
-        reliefFundsManagers[fundsAddress].totalAmount = 0;
-        reliefFundsManagers[fundsAddress].remainingUsage = 0;
+        delete reliefFundsManagers[fundsAddress];
+        
+        
+        // reliefFundsManagers[fundsAddress].description = "";
+        // reliefFundsManagers[fundsAddress].fundsNeeded = false;
+        // reliefFundsManagers[fundsAddress].manager = address(0x0000000000000000000000000000000000000000);
+        // reliefFundsManagers[fundsAddress].createdOn = 0;
+        // reliefFundsManagers[fundsAddress].totalAmount = 0;
+        // reliefFundsManagers[fundsAddress].remainingUsage = 0;
 
         // delete usageMapping[fundsAddress];
         // delete donationHistoryMapping[fundsAddress];
