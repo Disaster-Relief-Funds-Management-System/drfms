@@ -1,3 +1,7 @@
 .logo {
   cursor: pointer;
 }
+
+.right-nav-items li {
+  margin-left: 10px;
+}

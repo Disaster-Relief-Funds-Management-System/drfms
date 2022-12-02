@@ -36,6 +36,31 @@ export const BlockchainContextProvider = (props) => {
     deleteReliefFunds: false,
   });
 
+  const addTokensToWallet = async () => {
+    try {
+      const wasAdded = await ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20", // Initially only supports ERC20, but eventually more!
+          options: {
+            address: contractAddress, // The address that the token is at.
+            symbol: "PSH", // A ticker symbol or shorthand, up to 5 chars.
+            decimals: 18, // The number of decimals in the token
+            // image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+
+      if (wasAdded) {
+        console.log("Thanks for your interest!");
+      } else {
+        console.log("Your loss!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const checkIfWalletIsConnected = async () => {
     try {
       if (!ethereum) {
@@ -131,10 +156,12 @@ export const BlockchainContextProvider = (props) => {
         await connectWallet();
       }
 
+      var numberOfDecimals = 18;
+      var numberOfTokens = ethers.utils.parseUnits(amount, numberOfDecimals);
+
       // receiver = same as fundsAddress before
-      const options = { value: ethers.utils.parseEther(amount) };
       const smartContract = getEthereumContract();
-      const txHash = await smartContract.donate(receiver, options);
+      const txHash = await smartContract.donate(receiver, numberOfTokens);
       console.log(`Loading - ${txHash.hash}`);
       setIsLoading((prevState) => {
         return { ...prevState, donate: true };
@@ -346,6 +373,7 @@ export const BlockchainContextProvider = (props) => {
         getUsage,
         toggleFunds,
         deleteFunds,
+        addTokensToWallet,
       }}
     >
       {props.children}
