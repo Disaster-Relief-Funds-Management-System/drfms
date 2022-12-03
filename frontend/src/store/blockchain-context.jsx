@@ -359,6 +359,24 @@ export const BlockchainContextProvider = (props) => {
     }
   };
 
+  const getTokenBalance = async () => {
+    try {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
+      }
+
+      // receiver = same as fundsAddress before
+      const smartContract = getEthereumContract();
+      const balance = await smartContract.balanceOf(connectedWallet);
+
+      return { balance: balance };
+    } catch (err) {
+      console.log("error occured while trying to get token balance\n" + err);
+      return { error: err };
+    }
+  };
+
   return (
     <BlockchainContext.Provider
       value={{
@@ -374,6 +392,7 @@ export const BlockchainContextProvider = (props) => {
         toggleFunds,
         deleteFunds,
         addTokensToWallet,
+        getTokenBalance,
       }}
     >
       {props.children}

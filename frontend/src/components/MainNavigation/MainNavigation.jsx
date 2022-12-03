@@ -1,12 +1,41 @@
-import { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useContext, useState } from "react";
+import { NavLink } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 
 import { BlockchainContext } from "../../store/blockchain-context";
+import TokenBalance from "../TokenBalance/TokenBalance";
+import Modal from "../Modal/Modal";
+import { contractAddress } from "../../utils/constansts";
 
 const MainNavigation = () => {
-  const { connectedWallet, connectWallet, addTokensToWallet } =
+  const { connectedWallet, connectWallet, addTokensToWallet, getTokenBalance } =
     useContext(BlockchainContext);
+  const [showTokenBalanceErrorModal, setShowTokenBalanceErrorModal] =
+    useState(undefined);
+  const [showTokenBalanceModal, setShowTokenBalanceModal] = useState(undefined);
+
+  const checkBalanceHandler = async () => {
+    let result = await getTokenBalance();
+
+    if (result.error) {
+      setShowTokenBalanceErrorModal({
+        title: "ERROR",
+        error: result.error,
+      });
+    } else {
+      setShowTokenBalanceModal({
+        title: "TOKEN BALANCE",
+        message: (
+          <TokenBalance
+            contract={contractAddress}
+            account={connectedWallet}
+            balance={result.balance.toString()}
+          />
+        ),
+      });
+    }
+  };
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -73,14 +102,24 @@ const MainNavigation = () => {
             </ul>
             <ul className={`navbar-nav ms-auto ${classes["right-nav-items"]}`}>
               {connectedWallet !== "" && (
-                <li className="nav-item">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={addTokensToWallet}
-                  >
-                    Missing Tokens?
-                  </button>
-                </li>
+                <>
+                  <li className="nav-item">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={addTokensToWallet}
+                    >
+                      Missing Tokens?
+                    </button>
+                  </li>
+                  <li className="nav-item">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={checkBalanceHandler}
+                    >
+                      Token Balance
+                    </button>
+                  </li>
+                </>
               )}
               <li className="nav-item">
                 <button className="btn btn-primary" onClick={connectWallet}>
@@ -91,6 +130,21 @@ const MainNavigation = () => {
           </div>
         </div>
       </nav>
+      {showTokenBalanceModal && (
+        <Modal
+          dismissModal={setShowTokenBalanceModal}
+          title={showTokenBalanceModal.title}
+          message={showTokenBalanceModal.message}
+        />
+      )}
+
+      {showTokenBalanceErrorModal && (
+        <Modal
+          dismissModal={setShowTokenBalanceErrorModal}
+          title={showTokenBalanceErrorModal.title}
+          message={showTokenBalanceErrorModal.error}
+        />
+      )}
     </>
   );
 };
