@@ -34,6 +34,8 @@ export const BlockchainContextProvider = (props) => {
     addUsageInfo: false,
     toggleState: false,
     deleteReliefFunds: false,
+    ethToToken: false,
+    tokenToEth: false,
   });
 
   const addTokensToWallet = async () => {
@@ -368,12 +370,67 @@ export const BlockchainContextProvider = (props) => {
 
       // receiver = same as fundsAddress before
       const smartContract = getEthereumContract();
-      const balance = await smartContract.balanceOf(connectedWallet);
+      let balance = await smartContract.balanceOf(connectedWallet);
+      balance = ethers.utils.formatUnits(balance, 18);
 
       return { balance: balance };
     } catch (err) {
       console.log("error occured while trying to get token balance\n" + err);
       return { error: err };
+    }
+  };
+
+  const ethToToken = async (amount) => {
+    try {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
+      }
+
+      const options = { value: ethers.utils.parseEther(amount) };
+      const smartContract = getEthereumContract();
+      const txHash = await smartContract.ethToToken(options);
+
+      setIsLoading((prevState) => {
+        return { ...prevState, ethToToken: true };
+      });
+      await txHash.wait();
+      setIsLoading((prevState) => {
+        return { ...prevState, ethToToken: false };
+      });
+
+      return { hash: txHash.hash };
+    } catch (err) {
+      console.log("error occured while trying to trade eth with token\n" + err);
+      return { error: err.error.message };
+    }
+  };
+
+  const tokenToEth = async (amount) => {
+    try {
+      const statusConnected = await checkIfWalletIsConnected();
+      if (!statusConnected) {
+        await connectWallet();
+      }
+
+      var numberOfDecimals = 18;
+      var numberOfTokens = ethers.utils.parseUnits(amount, numberOfDecimals);
+
+      const smartContract = getEthereumContract();
+      const txHash = await smartContract.tokenToEth(numberOfTokens);
+
+      setIsLoading((prevState) => {
+        return { ...prevState, tokenToEth: true };
+      });
+      await txHash.wait();
+      setIsLoading((prevState) => {
+        return { ...prevState, tokenToEth: false };
+      });
+
+      return { hash: txHash.hash };
+    } catch (err) {
+      console.log("error occured while trying to trade token with eth\n" + err);
+      return { error: err.error.message };
     }
   };
 
@@ -393,6 +450,8 @@ export const BlockchainContextProvider = (props) => {
         deleteFunds,
         addTokensToWallet,
         getTokenBalance,
+        ethToToken,
+        tokenToEth,
       }}
     >
       {props.children}

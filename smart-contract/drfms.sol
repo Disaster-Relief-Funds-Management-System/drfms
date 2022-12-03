@@ -133,8 +133,29 @@ contract DRFMS is ERC20Basic {
         // delete donationHistoryMapping[fundsAddress];
     }
 
+    function tokenToEth(uint256 amount) public payable {
+        require(getBalance() >= amount, "500: cannot send as contract does not have enough funds");
+        require(balanceOf(msg.sender) >= amount, "you do not have eough tokens to perform trade");
+        payable(msg.sender).transfer(amount);
+        sendPaSheuem(msg.sender, address(this), amount);
+    }
+    
+    function ethToToken() public payable {
+        payable(this).transfer(msg.value); // transfers amount ETH to this contract
+        sendPaSheuem(address(this), msg.sender, msg.value);
+    }
+
     function closeContract() public onlyDeveloper { 
         selfdestruct(developer);
     }
 
+    // Function to receive Ether. msg.data must be empty
+    receive() external payable {}
+
+    // Fallback function is called when msg.data is not empty
+    fallback() external payable {}
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
 }

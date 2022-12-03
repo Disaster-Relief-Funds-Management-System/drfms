@@ -99,6 +99,21 @@ const MainNavigation = () => {
                   Managers
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink
+                  // style={({ isActive }) => {
+                  //   return isActive
+                  //     ? { color: "white", backgroundColor: "black" }
+                  //     : {};
+                  // }}
+                  className={`nav-link ${({ isActive }) =>
+                    isActive ? "active" : "inactive"}`}
+                  aria-current="page"
+                  to="/trade"
+                >
+                  Trade
+                </NavLink>
+              </li>
             </ul>
             <ul className={`navbar-nav ms-auto ${classes["right-nav-items"]}`}>
               {connectedWallet !== "" && (

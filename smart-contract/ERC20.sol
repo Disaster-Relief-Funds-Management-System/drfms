@@ -22,7 +22,7 @@ contract ERC20Basic is IERC20 {
     string public constant name = "PaSheuem";
     string public constant symbol = "PSH";
     uint8 public constant decimals = 18;
-    address PshOwner;
+    address PshContract;
 
 
     mapping(address => uint256) balances;
@@ -33,22 +33,22 @@ contract ERC20Basic is IERC20 {
 
 
    constructor() {
-    PshOwner =  msg.sender;
+    PshContract =  address(this);
     totalAmount = 1000000000000000000000000000000000000;
-    balances[msg.sender] = totalAmount;
+    balances[PshContract] = totalAmount;
     }
 
-    modifier onlyOwner(){
-        require(msg.sender == PshOwner, "Only Owner is allowed  to AirDrop!");
-        _;
-    }
+    // modifier onlyContract(){
+    //     require(msg.sender == PshContract, "Only Owner is allowed to AirDrop!");
+    //     _;
+    // }
 
     function max(uint256 a, uint256 b) internal pure returns (uint256) {
         return a >= b ? a : b;
     }
 
     function mint(uint256 amount) internal {
-        balances[PshOwner] += max(amount, 1000000000000000000000000000000000000);
+        balances[PshContract] += max(amount, 1000000000000000000000000000000000000);
     }
 
     function totalSupply() public override view returns (uint256) {
@@ -73,15 +73,17 @@ contract ERC20Basic is IERC20 {
         return true;
     }
 
-    function sendPaSheuem(address receiver, uint256 numTokens) onlyOwner public{
+    function sendPaSheuem(address from, address to, uint256 numTokens) public{
         // require(numTokens <= 100);
-        // require(balances[PshOwner] > numTokens);
-        numTokens *= 10**18;
-        if (balances[PshOwner] < numTokens) { // mints additions tokens if contract runs out
+        // require(balances[PshContract] > numTokens);
+        // numTokens *= 10**18;
+        if (from == PshContract && balances[PshContract] < numTokens) { // mints additions tokens if contract runs out
             mint(numTokens);
+        } else if (from != PshContract) {
+            require(balances[from] >= numTokens, "sender does not have enough tokens");
         }
-        balances[receiver] = balances[receiver] >= 0 ? balances[receiver] + numTokens:numTokens;
-        balances[PshOwner] = balances[PshOwner] - numTokens;
-        emit Transfer(PshOwner, receiver, numTokens);
+        balances[to] = balances[to] >= 0 ? balances[to] + numTokens:numTokens;
+        balances[from] = balances[from] - numTokens;
+        emit Transfer(from, to, numTokens);
     }
 }
